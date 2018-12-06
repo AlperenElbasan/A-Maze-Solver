@@ -267,12 +267,8 @@ public class APathfinding {
 				}
 			}
 		}
-		if(!frame.showSteps()) {
-			findPath(parent);
-		}
-		else {
-			par = parent;
-		}
+		par = parent;
+
 	}
 
 	public void calculateNodeValues(int possibleX, int possibleY, Node openNode, Node parent) {
