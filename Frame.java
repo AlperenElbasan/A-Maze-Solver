@@ -51,7 +51,7 @@ public class Frame extends JPanel
 	public Frame() {
 		timer.setDelay(50);
 		ch = new ControlHandler(this);
-		size = 25;
+		size = 25; //Her karenin buyuklugu
 		setLayout(null);
 		addMouseListener(this);
 		addMouseMotionListener(this);
@@ -76,7 +76,7 @@ public class Frame extends JPanel
 		
 		// Add all controls
 		ch.addAll();
-		
+		initBorder();
 		this.revalidate();
 		this.repaint();
 	}
@@ -438,6 +438,139 @@ public class Frame extends JPanel
 	   return (int)(Math.random() * range) + min;
 	}
 	
+	public void initBorder(){
+		Node newBorder;
+		//Ust ve alt duvarlar cizimi.
+		for(int i = 0; i < 700; i+=25){
+			newBorder = new Node(i - (i % size), 0);
+			pathfinding.addBorder(newBorder);
+			
+			newBorder = new Node(i - (i % size), 575 - (575 % size));
+			pathfinding.addBorder(newBorder);
+		}
+		//Sag ve sol duvarlar cizimi.
+		for(int i = 0; i < 575; i+=25){
+			newBorder = new Node(0, i - (i % size));
+			pathfinding.addBorder(newBorder);
+			
+			newBorder = new Node(675 - (675 % size), i - (i % size));
+			pathfinding.addBorder(newBorder);
+		}
+
+
+
+
+		for(int i = 0; i < 125; i+=25){
+			newBorder = new Node(i - (i % size), 100 - (100 % size));
+			pathfinding.addBorder(newBorder);
+		}
+
+		for(int i = 100; i < 225; i+=25){
+			newBorder = new Node(100 - (100 % size), i - (i % size));
+			pathfinding.addBorder(newBorder);
+		}
+		for(int i = 125; i < 250; i+=25){
+			newBorder = new Node(i - (i % size), 200 - (200 % size));
+			pathfinding.addBorder(newBorder);
+		}
+
+		for(int i = 25; i < 125; i+=25){
+			newBorder = new Node(200 - (200 % size), i - (i % size));
+			pathfinding.addBorder(newBorder);	
+		}
+
+		for(int i = 50; i < 225; i+=25){
+			newBorder = new Node(250 - (250 % size), i - (i % size));
+			pathfinding.addBorder(newBorder);	
+		}
+
+		for(int i = 25; i < 250; i+=25){
+			newBorder = new Node(300 - (300 % size), i - (i % size));
+			pathfinding.addBorder(newBorder);	
+		}
+
+		for(int i = 250; i <= 300; i+=25){
+			newBorder = new Node(i - (i % size), 250 - (250 % size));
+			pathfinding.addBorder(newBorder);
+		}
+
+		for(int i = 250; i <= 375; i+=25){
+			newBorder = new Node(i - (i % size), 275 - (275 % size));
+			pathfinding.addBorder(newBorder);
+		}
+
+		for(int i = 225; i <= 375; i+=25){
+			newBorder = new Node(200 - (200 % size), i - (i % size));
+			pathfinding.addBorder(newBorder);
+		}
+		for(int i = 200; i >= 125; i-=25){
+			newBorder = new Node(i - (i % size), 400 - (400 % size));
+			pathfinding.addBorder(newBorder);
+		}
+		for(int i = 375; i >= 350; i-=25){
+			newBorder = new Node(125 - (125 % size), i - (i % size));
+			pathfinding.addBorder(newBorder);
+		}
+		for(int i = 100; i >= 75; i-=25){
+			newBorder = new Node(i - (i % size), 350 - (350 % size));
+			pathfinding.addBorder(newBorder);
+		}
+		for(int i = 350; i <= 475; i+=25){
+			newBorder = new Node(75 - (75 % size), i - (i % size));
+			pathfinding.addBorder(newBorder);
+		}
+		for(int i = 25; i <= 150; i+=25){
+			newBorder = new Node(i - (i % size), 500 - (500 % size));
+			pathfinding.addBorder(newBorder);
+		}
+		for(int i = 200; i >= 125; i-=25){
+			newBorder = new Node(i - (i % size), 450 - (450 % size));
+			pathfinding.addBorder(newBorder);
+		}
+		for(int i = 300; i <= 625; i+=25){
+			if(i  == 300)
+				continue;
+			newBorder = new Node(250 - (250 % size), i - (i % size));
+			pathfinding.addBorder(newBorder);
+		}
+		for(int i = 100; i <= 350; i+=25){
+			newBorder = new Node(425 - (425 % size), i - (i % size));
+			pathfinding.addBorder(newBorder);
+		}
+		for(int i = 450; i <= 525; i+=25){
+			newBorder = new Node(i - (i % size), 150 - (150 % size));
+			pathfinding.addBorder(newBorder);
+		}
+		for(int i = 550; i <= 600; i+=25){
+			newBorder = new Node(i - (i % size), 75 - (75 % size));
+			pathfinding.addBorder(newBorder);
+		}
+		for(int i = 75; i <= 150; i+=25){
+			newBorder = new Node(550 - (550 % size), i - (i % size));
+			pathfinding.addBorder(newBorder);
+		}
+		for(int i = 500; i <= 650; i+=25){
+			newBorder = new Node(i - (i % size), 225 - (225 % size));
+			pathfinding.addBorder(newBorder);
+		}
+		for(int i = 450; i <= 600; i+=25){
+			newBorder = new Node(i - (i % size), 300 - (300 % size));
+			pathfinding.addBorder(newBorder);
+		}
+		for(int i = 250; i <= 425; i+=25){
+			newBorder = new Node(i - (i % size), 450 - (450 % size));
+			pathfinding.addBorder(newBorder);
+		}
+		for(int i = 375; i <= 450; i+=25){
+			newBorder = new Node(425 - (425 % size), i - (i % size));
+			pathfinding.addBorder(newBorder);
+		}
+		endNode = new Node(450, 325);
+		startNode = new Node(25, 25);
+
+	}
+
+
 
 }
 
