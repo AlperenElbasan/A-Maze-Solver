@@ -74,8 +74,8 @@ public class ControlHandler {
 
 	// diagonalCheck ve run'in pozisyonu ayarlandi.
 		public void position() {
-		diagonalCheck.setBounds(20, frame.getHeight()-30, 90, 20);
-		run.setBounds(20, frame.getHeight()-50, 50, 20);
+		diagonalCheck.setBounds(frame.getWidth()/2 + 20, 0, 90, 20);
+		run.setBounds(frame.getWidth()/2 - 60, 0, 50, 20);//Yataykoord, dikeykoord, yataybuyukluk, dikeybuyukluk 
 	}
 	
 	// diagonalCheck ve run frame'e eklenmeli.

@@ -207,11 +207,9 @@ public class Frame extends JPanel
 			g.fillRect(endNode.getX() + 1, endNode.getY() + 1, size - 1, size - 1);
 		}
 		
-
-		g.setColor(new Color(120, 120, 120, 80));
-
-		// Drawing control panel rectangle
-		g.fillRect(10, height-96, 322, 90);
+		//Kontrol panelinin oldugu kisim boyandi.
+		g.setColor(new Color(120, 120, 120, 200));
+		g.fillRect((height/2) - 20, 0, 190, 25);
 
 		
 		// Position all controls
