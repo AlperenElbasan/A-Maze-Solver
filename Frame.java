@@ -23,6 +23,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.*;
 
 /* The main graphics class for APathfinding. Controls the window,
  * and all path finding node graphics. Need to work on zoom function,
@@ -38,6 +39,7 @@ public class Frame extends JPanel
 	int size;
 	char currentKey = (char) 0;
 	Node startNode, endNode;
+	boolean startWithTemplate = true;
 	
 	Timer timer = new Timer(100, this);
 	int r = randomWithRange(0, 255);
@@ -45,8 +47,39 @@ public class Frame extends JPanel
 	int b = randomWithRange(0, 255);
 
 	public static void main(String[] args) {
-		new Frame();
+		JFrame selectionWindow = new JFrame();
+		JButton buttonEmpty = new JButton("Empty");
+		JButton buttonTemplate = new JButton("Template");
+		JPanel panel = new JPanel();
+		panel.add(buttonEmpty);
+		panel.add(buttonTemplate);
+		selectionWindow.getContentPane().add(panel);
+		selectionWindow.setVisible(true);
+		selectionWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		selectionWindow.setSize(200,100);
+
+
+		Frame mainframe = new Frame();
+		buttonEmpty.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainframe.getWindow().setVisible(true);
+				selectionWindow.setVisible(false);
+			}
+		});
+		buttonTemplate.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainframe.initBorder();
+				mainframe.getWindow().setVisible(true);
+				selectionWindow.setVisible(false);
+			}
+		});
+
+
+
 	}
+
 
 	public Frame() {
 		timer.setDelay(50);
@@ -72,13 +105,14 @@ public class Frame extends JPanel
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.pack();
 		window.setLocationRelativeTo(null);
-		window.setVisible(true);
 		
 		// Add all controls
 		ch.addAll();
-		initBorder();
 		this.revalidate();
 		this.repaint();
+	}
+	public JFrame getWindow(){
+		return window;
 	}
 
 	public void paintComponent(Graphics g) {
