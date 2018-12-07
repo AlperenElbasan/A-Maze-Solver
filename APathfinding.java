@@ -165,7 +165,7 @@ public class APathfinding {
 					int crossBorderX = parent.getX() + (possibleX - parent.getX());
 					int crossBorderY = parent.getY() + (possibleY - parent.getY());
 
-					// Disables ability to cut corners around borders
+					// Köşegenlere gidilebilse de duvarların arasından geçilemesin.
 					if (searchBorder(crossBorderX, parent.getY()) != -1
 							| searchBorder(parent.getX(), crossBorderY) != -1 && ((j == 0 | j == 2) && i != 1)) {
 						continue;
@@ -175,29 +175,16 @@ public class APathfinding {
 				}
 			}
 		} 
-		else if (!trig) {
-			// Detects and adds one step of nodes to open list
-			for (int i = 0; i < 3; i++) {
-				for (int j = 0; j < 3; j++) {
-					if((i == 0 && j == 0) || (i == 0 && j == 2) || 
-						(i == 1 && j == 1) || (i == 2 && j == 0) ||
-						(i == 2 && j == 2)) {
-						continue;
-					}
-					int possibleX = (parent.getX() - size) + (size * i);
-					int possibleY = (parent.getY() - size) + (size * j);
 
-					calculateNodeValues(possibleX, possibleY, openNode, parent);
-				}
-			}
-		}
 		else {
 			for (int i = 0; i < 4; i++) {
 				// Uses cosine and sine functions to get circle of points
 				// around parent
 				int possibleX = (int) Math.round(parent.getX() + (-size * Math.cos(kValue * i)));
 				int possibleY = (int) Math.round(parent.getY() + (-size * Math.sin(kValue * i)));
-
+				System.out.println("a");
+				
+				
 				calculateNodeValues(possibleX, possibleY, openNode, parent);
 			}
 		}
@@ -290,11 +277,9 @@ public class APathfinding {
 		// Set the parent of the open node
 		openNode.setParent(parent);
 
-		// Calculating G cost
-		// Cost to move from parent node to one open node (x
-		// and
-		// y
-		// separately)
+		// G fonksiyonu, baslangictan node'a kadar alinan yol
+		// Yontem: Parent node'un costu belli, parent'tan
+		// node'a gidiş costu + parent'a gelene kadar toplam cost.
 		int GxMoveCost = openNode.getX() - parent.getX();
 		int GyMoveCost = openNode.getY() - parent.getY();
 		int gCost = parent.getG();
@@ -306,13 +291,13 @@ public class APathfinding {
 		}
 		openNode.setG(gCost);
 
-		// Calculating H Cost
+		// H fonksiyonu, bitis ile node arasindaki manhattan distance
 		int HxDiff = Math.abs(endNode.getX() - openNode.getX());
 		int HyDiff = Math.abs(endNode.getY() - openNode.getY());
 		int hCost = HxDiff + HyDiff;
 		openNode.setH(hCost);
 
-		// Calculating F Cost
+		// F fonksiyonu, A*'ın toplam fonksiyonu
 		int fCost = gCost + hCost;
 		openNode.setF(fCost);
 

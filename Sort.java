@@ -1,10 +1,4 @@
 import java.util.ArrayList;
-
-/* Sort functions used in path finding to
- * determine lowest F cost Node. Bubble sort is mainly
- * used, quick sort needs work. Currently not working
- * by Devon Crawford
- */
 public class Sort {
 
 	private boolean lowToHigh, highToLow;
@@ -72,8 +66,7 @@ public class Sort {
 		}
 	}
 
-	// low is 0, high is numbers.length - 1
-	// TODO: FIX HIGH TO LOW QUICKSORT
+	// low = 0, high = numbers.length - 1
 	public void quickSort(int[] numbers, int low, int high) {
 		int i = low, j = high;
 
@@ -112,7 +105,7 @@ public class Sort {
 			quickSort(numbers, low, j);
 		if (i < high)
 			quickSort(numbers, i, high);
-	} // end of quick sort
+	} // quicksort'un bitisi
 
 	public void setLowToHigh() {
 		lowToHigh = true;

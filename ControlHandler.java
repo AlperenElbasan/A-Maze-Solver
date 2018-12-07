@@ -11,17 +11,14 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-/* This class manages all components used on the main
- * control panel (bottom left) Meant to remove some
- * excessive graphics code from "Frame.java" class
- * by Devon Crawford
- */
+
 public class ControlHandler {
 	private Frame frame;
 	private JLabel noPathT;
+	private JLabel timePassed;
 	private JCheckBox diagonalCheck;
 	private JButton run;
-	Dimension npD;
+	Dimension npD, npE;
 	
 	public ControlHandler(Frame frame) {
 		this.frame = frame;
@@ -32,7 +29,16 @@ public class ControlHandler {
 		Font bigTextFont = new Font("arial", Font.BOLD, 72);
 		noPathT.setFont(bigTextFont);
 		npD = noPathT.getPreferredSize();
-		
+		noPathT.setVisible(false);
+
+		timePassed = new JLabel("aaa");
+		timePassed.setName("timePassed");
+		timePassed.setForeground(Color.gray);
+		Font timePassedFont = new Font("arial", Font.BOLD, 50);
+		timePassed.setFont(timePassedFont);
+		npE = timePassed.getPreferredSize();
+		timePassed.setVisible(false);
+
 		diagonalCheck = new JCheckBox();
 		diagonalCheck.setText("Diagonal");
 		diagonalCheck.setName("diagonalCheck");
@@ -59,29 +65,35 @@ public class ControlHandler {
 	public JButton getRun(){
 		return run;
 	}
-	
-
-	public void noPathTBounds() {
-		noPathT.setBounds((int)((frame.getWidth()/2)-(npD.getWidth()/2)), 
-				(int)((frame.getHeight()/2)-70), 
-				(int)npD.getWidth(), (int)npD.getHeight());
+	public JLabel getTimePassed(){
+		return timePassed;
 	}
+
 	
 
 
 
 
 
-	// diagonalCheck ve run'in pozisyonu ayarlandi.
+	// Tum pozisyonlar ayarlandi.
 		public void position() {
 		diagonalCheck.setBounds(frame.getWidth()/2 + 20, 0, 90, 20);
 		run.setBounds(frame.getWidth()/2 - 60, 0, 50, 20);//Yataykoord, dikeykoord, yataybuyukluk, dikeybuyukluk 
+		timePassed.setBounds((int)((frame.getWidth()/2 - 50)-(npE.getWidth()/2)), 
+		(int)((frame.getHeight()/2)+200), 
+		400, (int)npE.getHeight());
+		
+		noPathT.setBounds((int)((frame.getWidth()/2)-(npD.getWidth()/2)), 
+		(int)((frame.getHeight()/2)-70), 
+		(int)npD.getWidth(), (int)npD.getHeight());
 	}
 	
-	// diagonalCheck ve run frame'e eklenmeli.
+	// Tum itemlar frame'e eklenmeli.
 	public void addAll() {
 		frame.add(diagonalCheck);
 		frame.add(run);
+		frame.add(noPathT);
+		frame.add(timePassed);
 	}
 	
 }

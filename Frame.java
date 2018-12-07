@@ -25,11 +25,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.*;
 
-/* The main graphics class for APathfinding. Controls the window,
- * and all path finding node graphics. Need to work on zoom function,
- * currently only zooms to top left corner rather than towards mouse
- * by Devon Crawford
- */
+
 public class Frame extends JPanel
 		implements ActionListener, MouseListener, MouseMotionListener, MouseWheelListener, KeyListener {
 
@@ -45,6 +41,10 @@ public class Frame extends JPanel
 	int r = randomWithRange(0, 255);
 	int G = randomWithRange(0, 255);
 	int b = randomWithRange(0, 255);
+
+	long startTime;
+	long endTime;
+	boolean timePassedFlag;
 
 	public static void main(String[] args) {
 		JFrame selectionWindow = new JFrame();
@@ -93,11 +93,11 @@ public class Frame extends JPanel
 		setFocusable(true);
 		setFocusTraversalKeysEnabled(false);
 
-		// Set up pathfinding
+		// Pathfinding'i kurma
 		pathfinding = new APathfinding(this, size);
 		pathfinding.setDiagonal(true);
 		
-		// Set up window
+		// Pencereyi kurma
 		window = new JFrame();
 		window.setContentPane(this);
 		window.setTitle("A* Pathfinding Visualization");
@@ -106,7 +106,7 @@ public class Frame extends JPanel
 		window.pack();
 		window.setLocationRelativeTo(null);
 		
-		// Add all controls
+		// Tum itemlari ekle
 		ch.addAll();
 		this.revalidate();
 		this.repaint();
@@ -118,7 +118,7 @@ public class Frame extends JPanel
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-		// Grab dimensions of panel
+		// Panelin boyutları
 		int height = getHeight();
 		int width = getWidth();
 		
@@ -134,10 +134,15 @@ public class Frame extends JPanel
 			g.fillRect(0, 0, getWidth(), getHeight());
 
 			// Ekranin ortasina "No Path" yazisini ekle.
-			ch.noPathTBounds();
 			ch.getNoPathT().setVisible(true);
-			this.add(ch.getNoPathT());
-			//this.revalidate(); //????
+			
+			// Gecen zamani goster
+			endTime = System.nanoTime();
+			ch.getTimePassed().setVisible(true);
+			if(timePassedFlag){
+				ch.getTimePassed().setText("Time: " + (endTime - startTime)/10000000);
+				timePassedFlag = false;
+			}
 		}
 
 		// Cikisa giden bir yol bulunduysa
@@ -145,14 +150,22 @@ public class Frame extends JPanel
 			// run button'indaki "Run" yazisini "Clear" olarak degistir.
 			ch.getRun().setText("clear");
 			
+			// Gecen zamani goster
+			endTime = System.nanoTime();
+			ch.getTimePassed().setVisible(true);
+			if(timePassedFlag){
+				ch.getTimePassed().setText("Time: " + (endTime - startTime)/10000000);
+				timePassedFlag = false;
+			}
 
-			// Make the background flicker
+
+			// Renk degistirme animasyonu
 			Color flicker = new Color(r, G, b);
 			g.setColor(flicker);
 			g.fillRect(0, 0, getWidth(), getHeight());
 		}
 
-		// Kareleri cizer.
+		// Kareleri renklendirir
 		g.setColor(Color.lightGray);
 		for (int j = 0; j < this.getHeight(); j += size) {
 			for (int i = 0; i < this.getWidth(); i += size) {
@@ -160,7 +173,7 @@ public class Frame extends JPanel
 			}
 		}
 
-		// Draws all borders???????????????????????????
+		// Tum duvarlari renklendirir
 		g.setColor(Color.black);
 		for (int i = 0; i < pathfinding.getBorderList().size(); i++) {
 			g.fillRect(pathfinding.getBorderList().get(i).getX() + 1, pathfinding.getBorderList().get(i).getY() + 1,
@@ -173,7 +186,7 @@ public class Frame extends JPanel
 			g.setColor(new Color(132, 255, 138));
 			g.fillRect(current.getX() + 1, current.getY() + 1, size - 1, size - 1);
 
-			drawInfo(current, g);
+			drawInfo(current, g); // Bu kutucuklarin icine f, g, h fonksiyonunun degerlerini yazar.
 		}
 
 		// Butun kapali nodelarin cizilmesi gerek.
@@ -186,7 +199,7 @@ public class Frame extends JPanel
 			drawInfo(current, g);
 		}
 
-		// Draw all final path nodes
+		// Path'in cizilmesi(renklendirilmesi)
 		for (int i = 0; i < pathfinding.getPathList().size(); i++) {
 			Node current = pathfinding.getPathList().get(i);
 
@@ -196,12 +209,12 @@ public class Frame extends JPanel
 			drawInfo(current, g);
 		}
 
-		// Baslangic koordinatini boyar.
+		// Baslangic koordinatini renklendirir.
 		if (startNode != null) {
 			g.setColor(Color.blue);
 			g.fillRect(startNode.getX() + 1, startNode.getY() + 1, size - 1, size - 1);
 		}
-		// Bitis koordinatini boyar.
+		// Bitis koordinatini renklendirir.
 		if (endNode != null) {
 			g.setColor(Color.red);
 			g.fillRect(endNode.getX() + 1, endNode.getY() + 1, size - 1, size - 1);
@@ -212,12 +225,12 @@ public class Frame extends JPanel
 		g.fillRect((height/2) - 20, 0, 190, 25);
 
 		
-		// Position all controls
+		// Tum controlHandler itemlarinin yeri belirlendi.
 		ch.position();
 		pathfinding.setDiagonal(ch.getDiagonalCheck().isSelected());
 	}
 	
-	// Draws info (f, g, h) on current node
+	// Kutucuklara f, g, h degerlerinin yazdirilmasi
 	public void drawInfo(Node current, Graphics g) {
 		if (size > 50) {
 			Font numbersFont = new Font("arial", Font.BOLD, 12);
@@ -232,9 +245,9 @@ public class Frame extends JPanel
 	}
 
 	public void MapCalculations(MouseEvent e) {
-		// If left mouse button is clicked
+		// Sol mouse tusuna basildiysa
 		if (SwingUtilities.isLeftMouseButton(e)) {
-			// If 's' is pressed create start node
+			// "s" tusuna basildiysa
 			if (currentKey == 's') {
 				int xRollover = e.getX() % size;
 				int yRollover = e.getY() % size;
@@ -246,7 +259,7 @@ public class Frame extends JPanel
 				}
 				repaint();
 			} 
-			// If 'e' is pressed create end node
+			// "e" tusuna basildiysa
 			else if (currentKey == 'e') {
 				int xRollover = e.getX() % size;
 				int yRollover = e.getY() % size;
@@ -258,7 +271,7 @@ public class Frame extends JPanel
 				}
 				repaint();
 			} 
-			// Otherwise, create a wall
+			// Bunlara basilmadiysa duvar yarat
 			else {
 				int xBorder = e.getX() - (e.getX() % size);
 				int yBorder = e.getY() - (e.getY() % size);
@@ -269,26 +282,27 @@ public class Frame extends JPanel
 				repaint();
 			}
 		} 
-		// If right mouse button is clicked
+		// Sag mouse tusuna basildiysa
 		else if (SwingUtilities.isRightMouseButton(e)) {
 			int mouseBoxX = e.getX() - (e.getX() % size);
 			int mouseBoxY = e.getY() - (e.getY() % size);
 
-			// If 's' is pressed remove start node
+			// "s" basildiysa baslangic kutusunu sil
 			if (currentKey == 's') {
 				if (startNode != null && mouseBoxX == startNode.getX() && startNode.getY() == mouseBoxY) {
 					startNode = null;
 					repaint();
 				}
 			} 
-			// If 'e' is pressed remove end node
+			// "e" basildiysa bitis kutusunu sil
 			else if (currentKey == 'e') {
 				if (endNode != null && mouseBoxX == endNode.getX() && endNode.getY() == mouseBoxY) {
 					endNode = null;
 					repaint();
 				}
 			} 
-			// Otherwise, remove wall
+			// Bunlara basilmadiysa duvari sil
+			// Location -1 ise orada duvar yok
 			else {
 				int Location = pathfinding.searchBorder(mouseBoxX, mouseBoxY);
 				if (Location != -1) {
@@ -322,7 +336,7 @@ public class Frame extends JPanel
 	}
 
 	@Override
-	// Track mouse on movement
+	// Mouse hareketini takip et
 	public void mouseMoved(MouseEvent e) {
 		int x = e.getX();
 		int y = e.getY();
@@ -338,7 +352,7 @@ public class Frame extends JPanel
 		char key = e.getKeyChar();
 		currentKey = key;
 
-		// Start if space is pressed
+		// Space'e basildiysa baslat
 		if (currentKey == KeyEvent.VK_SPACE) {
 			ch.getRun().setText("stop");
 			start();
@@ -350,11 +364,13 @@ public class Frame extends JPanel
 		currentKey = (char) 0;
 	}
 	
-	// Starts path finding
+	// Pathfinding (A* algorithm) baslat
 	void start() {
 		if(startNode != null && endNode != null) {
 			pathfinding.setup(startNode, endNode);
+			timePassedFlag = true;
 			timer.start();
+			startTime = System.nanoTime();
 		}
 		else {
 			System.out.println("ERROR: Needs start and end points to run.");
@@ -363,13 +379,13 @@ public class Frame extends JPanel
 	}
 	
 	@Override
-	// Scales the map with mouse wheel scroll
+	// Harita buyuklugunu mouse tekerlegi ile ayarlar
 	public void mouseWheelMoved(MouseWheelEvent m) {
 		int rotation = m.getWheelRotation();
 		double prevSize = size;
 		int scroll = 3;
 
-		// Changes size of grid based on scroll
+		// Teker yukari donerse haritayi buyut
 		if (rotation == -1 && size + scroll < 200) {
 			size += scroll;
 		} else if (rotation == 1 && size - scroll > 2) {
@@ -378,35 +394,35 @@ public class Frame extends JPanel
 		pathfinding.setSize(size);
 		double ratio = size / prevSize;
 
-		// new X and Y values for Start
+		// baslangic node'u icin yeni X, Y degerleri
 		if (startNode != null) {
 			int sX = (int) Math.round(startNode.getX() * ratio);
 			int sY = (int) Math.round(startNode.getY() * ratio);
 			startNode.setXY(sX, sY);
 		}
 
-		// new X and Y values for End
+		// bitis node'u icin yeni X, Y degerleri
 		if (endNode != null) {
 			int eX = (int) Math.round(endNode.getX() * ratio);
 			int eY = (int) Math.round(endNode.getY() * ratio);
 			endNode.setXY(eX, eY);
 		}
 
-		// new X and Y values for borders
+		// duvarlar icin yeni X, Y degerleri
 		for (int i = 0; i < pathfinding.getBorderList().size(); i++) {
 			int newX = (int) Math.round((pathfinding.getBorderList().get(i).getX() * ratio));
 			int newY = (int) Math.round((pathfinding.getBorderList().get(i).getY() * ratio));
 			pathfinding.getBorderList().get(i).setXY(newX, newY);
 		}
 
-		// New X and Y for Open nodes
+		// fringe nodelar icin yeni X, Y degerleri
 		for (int i = 0; i < pathfinding.getOpenList().size(); i++) {
 			int newX = (int) Math.round((pathfinding.getOpenList().get(i).getX() * ratio));
 			int newY = (int) Math.round((pathfinding.getOpenList().get(i).getY() * ratio));
 			pathfinding.getOpenList().get(i).setXY(newX, newY);
 		}
 
-		// New X and Y for Closed Nodes
+		// Kapali nodelar icin yeni X, Y degerleri
 		for (int i = 0; i < pathfinding.getClosedList().size(); i++) {
 			if (!Node.isEqual(pathfinding.getClosedList().get(i), startNode)) {
 				int newX = (int) Math.round((pathfinding.getClosedList().get(i).getX() * ratio));
@@ -419,10 +435,11 @@ public class Frame extends JPanel
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// Moves one step ahead in path finding (called on timer)
+		// Pathfinding'de bir adim ileri git
 		if (pathfinding.isRunning()) {
 			pathfinding.findPath(pathfinding.getPar());
 		}
+
 		// Bittiginde arkaplan renk degistirir.
 		if (pathfinding.isComplete() || pathfinding.isNoPath()) {
 			r = (int) (Math.random() * ((r + 15) - (r - 15)) + (r - 15));
@@ -440,7 +457,8 @@ public class Frame extends JPanel
 			}
 		}
 		
-		// Actions of run/stop/clear button
+		// run/stop/clear aksiyonlari.
+		//TODO: stop edildiginde gecen sure sabit kalmali
 		if(e.getActionCommand() != null) {
 			if(e.getActionCommand().equals("run") && !pathfinding.isRunning()) {
 				ch.getRun().setText("stop");
@@ -449,6 +467,7 @@ public class Frame extends JPanel
 			else if(e.getActionCommand().equals("clear")) {
 				ch.getRun().setText("run");
 				ch.getNoPathT().setVisible(false);
+				ch.getTimePassed().setVisible(false);
 				pathfinding.reset();
 			}
 			else if(e.getActionCommand().equals("stop")) {
@@ -463,13 +482,16 @@ public class Frame extends JPanel
 		repaint();
 	}
 	
-	// Returns random number between min and max
+	// Verilen iki sayi arasindan rastgele bir sayi secer
+	// Program bittiginde ekrani boyamak icin kullandik
 	int randomWithRange(int min, int max)
 	{
 	   int range = (max - min) + 1;     
 	   return (int)(Math.random() * range) + min;
 	}
 	
+
+	// Program templateli calisacagi zaman template olusturma islemi
 	public void initBorder(){
 		Node newBorder;
 		//Ust ve alt duvarlar cizimi.
